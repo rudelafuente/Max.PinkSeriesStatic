@@ -153,7 +153,10 @@ var App = (function() {
       app.innerHTML = "";
       answered = false;
 
-      // Word display
+      // Emoji + word display
+      if (currentWord.emoji) {
+        app.appendChild(el("div", { class: "word-emoji", text: currentWord.emoji }));
+      }
       var wordDisplay = el("div", { class: "word-display", text: currentWord.word });
 
       // Phoneme buttons
@@ -274,6 +277,9 @@ var App = (function() {
       var grid = el("div", { class: "choices-grid" });
       choices.forEach(function(choice) {
         var card = el("button", { class: "choice-card" });
+        if (choice.emoji) {
+          card.appendChild(el("span", { class: "choice-emoji", text: choice.emoji }));
+        }
         var wordSpan = el("span", { class: "choice-word", text: choice.word });
         var phonSpan = el("span", { class: "choice-phonemes",
           text: choice.phonemes.map(function(p) { return "/" + p + "/"; }).join(" ") });
@@ -394,6 +400,9 @@ var App = (function() {
       backFam.addEventListener("click", function() { navigate("families"); });
       app.appendChild(backFam);
 
+      if (wordItem.emoji) {
+        app.appendChild(el("div", { class: "word-emoji", text: wordItem.emoji }));
+      }
       var wordDisplay = el("div", { class: "word-display", text: wordItem.word });
 
       var phonemeRow = el("div", { class: "phoneme-row" });

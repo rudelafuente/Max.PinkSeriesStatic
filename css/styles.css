@@ -194,13 +194,21 @@ header {
 
 /* ── Word display ────────────────────────────────────────────────────────── */
 
+.word-emoji {
+  font-size: 5rem;
+  text-align: center;
+  line-height: 1.1;
+  padding: 4px 0;
+  user-select: none;
+}
+
 .word-display {
   font-size: 3.5rem;
   font-weight: 700;
   text-align: center;
   color: var(--accent);
   letter-spacing: 0.04em;
-  padding: 10px 0 4px;
+  padding: 4px 0;
 }
 
 /* ── Phoneme buttons ─────────────────────────────────────────────────────── */
@@ -294,6 +302,12 @@ header {
 
 .choice-card:hover { background: var(--accent-soft); border-color: var(--accent); }
 .choice-card:active { transform: scale(0.97); }
+
+.choice-emoji {
+  font-size: 2.4rem;
+  line-height: 1.1;
+  user-select: none;
+}
 
 .choice-word {
   font-size: 2rem;
