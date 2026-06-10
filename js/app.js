@@ -63,6 +63,20 @@ var App = (function() {
     return null;
   }
 
+  function createVisualNode(imagePath, emojiText, className, altText) {
+    if (imagePath) {
+      return el("img", {
+        class: className + " visual-image",
+        src: imagePath,
+        alt: altText || ""
+      });
+    }
+    if (emojiText) {
+      return el("span", { class: className, text: emojiText });
+    }
+    return null;
+  }
+
   function $(selector) { return document.querySelector(selector); }
 
   function el(tag, attrs, children) {
@@ -96,12 +110,14 @@ var App = (function() {
 
     wrap.appendChild(trigger);
 
-    if (wordEntry && wordEntry.emoji) {
+    var revealVisual = wordEntry
+      ? createVisualNode(wordEntry.image, wordEntry.emoji, revealClass, wordText + " illustration")
+      : null;
+
+    if (revealVisual) {
       var hint = el("div", { class: "word-reveal-hint", text: "Tap to see drawing" });
-      var reveal = el("div", {
-        class: revealClass + " word-reveal-art",
-        text: wordEntry.emoji
-      });
+      var reveal = el("div", { class: "word-reveal-art-wrap" });
+      reveal.appendChild(revealVisual);
       trigger.setAttribute("aria-expanded", "false");
       reveal.hidden = true;
 
@@ -387,9 +403,8 @@ var App = (function() {
       var grid = el("div", { class: "choices-grid" });
       choices.forEach(function(choice) {
         var card = el("button", { class: "choice-card" });
-        if (choice.emoji) {
-          card.appendChild(el("span", { class: "choice-emoji", text: choice.emoji }));
-        }
+        var choiceVisual = createVisualNode(choice.image, choice.emoji, "choice-emoji", choice.word + " illustration");
+        if (choiceVisual) card.appendChild(choiceVisual);
         var wordSpan = el("span", { class: "choice-word", text: choice.word });
         var phonSpan = el("span", { class: "choice-phonemes",
           text: choice.phonemes.map(function(p) { return "/" + p + "/"; }).join(" ") });
@@ -693,7 +708,8 @@ var App = (function() {
     stories.forEach(function(story) {
       var card = el("button", { class: "story-card" });
 
-      card.appendChild(el("span", { class: "story-card-emoji", text: story.emoji }));
+      var storyCardVisual = createVisualNode(story.image, story.emoji, "story-card-emoji", story.title + " cover");
+      if (storyCardVisual) card.appendChild(storyCardVisual);
       card.appendChild(el("span", { class: "story-card-title", text: story.title }));
       card.appendChild(el("span", { class: "story-card-meta", text: story.level + " · " + story.duration }));
 
@@ -739,8 +755,11 @@ var App = (function() {
     app.innerHTML = "";
 
     // Title + emoji
-    app.appendChild(el("div", { class: "story-title-display",
-      text: story.emoji + "  " + story.title }));
+    var titleDisplay = el("div", { class: "story-title-display" });
+    var storyTitleVisual = createVisualNode(story.image, story.emoji, "story-title-visual", story.title + " cover");
+    if (storyTitleVisual) titleDisplay.appendChild(storyTitleVisual);
+    titleDisplay.appendChild(el("span", { class: "story-title-text", text: story.title }));
+    app.appendChild(titleDisplay);
 
     // Mode tabs
     var tabs = el("div", { class: "mode-tabs" });

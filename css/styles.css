@@ -395,6 +395,15 @@ header {
   display: none;
 }
 
+.word-reveal-art-wrap[hidden] {
+  display: none;
+}
+
+.visual-image {
+  object-fit: cover;
+  background: #fff;
+}
+
 .word-display {
   font-size: 3.5rem;
   font-weight: 700;
@@ -501,6 +510,13 @@ header {
   font-size: 2.4rem;
   line-height: 1.1;
   user-select: none;
+}
+
+img.choice-emoji.visual-image {
+  width: 88px;
+  height: 88px;
+  border-radius: 14px;
+  border: 1.5px solid var(--border);
 }
 
 .choice-word {
@@ -816,6 +832,13 @@ header {
 
 .story-card-emoji { font-size: 2.4rem; line-height: 1.1; }
 
+img.story-card-emoji.visual-image {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: 12px;
+  border: 1.5px solid var(--border);
+}
+
 .story-card-title {
   font-size: 0.95rem;
   font-weight: 600;
@@ -873,8 +896,29 @@ header {
 .story-title-display {
   font-size: 1.3rem;
   font-weight: 700;
-  text-align: center;
   color: var(--accent);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.story-title-text {
+  display: block;
+}
+
+.story-title-visual {
+  font-size: 2.8rem;
+  line-height: 1;
+}
+
+img.story-title-visual.visual-image {
+  width: 100%;
+  max-width: 320px;
+  aspect-ratio: 4 / 3;
+  border-radius: 14px;
+  border: 1.5px solid var(--border);
 }
 
 .story-page {
