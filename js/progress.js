@@ -125,4 +125,59 @@ function getMonthProgress(year, month) {
 
 function clearAllProgress() {
   localStorage.removeItem(PROGRESS_KEY);
+  localStorage.removeItem(STORY_PROGRESS_KEY);
+}
+
+// ── Story Progress ────────────────────────────────────────────────────────────
+
+var STORY_PROGRESS_KEY = "pinkSeriesStoryProgress";
+var STORY_DAILY_TARGET = 3;
+
+function getStoryProgress() {
+  try {
+    var raw = localStorage.getItem(STORY_PROGRESS_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch (e) {
+    return {};
+  }
+}
+
+function saveStoryProgress(progress) {
+  localStorage.setItem(STORY_PROGRESS_KEY, JSON.stringify(progress));
+}
+
+function getEmptyStoryDay() {
+  return { storyId: null, storyTitle: "", correctWords: [], attempts: 0, completed: false };
+}
+
+function getTodayStoryProgress() {
+  var progress = getStoryProgress();
+  var key = getTodayKey();
+  return progress[key] ? progress[key] : getEmptyStoryDay();
+}
+
+function recordStoryAttempt(storyId, storyTitle, word, isCorrect) {
+  var progress = getStoryProgress();
+  var key = getTodayKey();
+  if (!progress[key]) progress[key] = getEmptyStoryDay();
+  var day = progress[key];
+  day.storyId = storyId;
+  day.storyTitle = storyTitle;
+  day.attempts += 1;
+  if (isCorrect && day.correctWords.indexOf(word) === -1) {
+    day.correctWords.push(word);
+  }
+  day.completed = day.correctWords.length >= STORY_DAILY_TARGET;
+  saveStoryProgress(progress);
+  return day;
+}
+
+function getMonthStoryProgress(year, month) {
+  var progress = getStoryProgress();
+  var prefix = year + "-" + String(month).padStart(2, "0") + "-";
+  var result = {};
+  Object.keys(progress).forEach(function(key) {
+    if (key.indexOf(prefix) === 0) result[key] = progress[key];
+  });
+  return result;
 }

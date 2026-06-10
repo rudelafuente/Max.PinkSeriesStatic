@@ -118,7 +118,9 @@ var App = (function() {
       listen:    renderListen,
       families:  renderFamilies,
       calendar:  renderCalendar,
-      settings:  renderSettings
+      settings:  renderSettings,
+      stories:   renderStories,
+      story:     renderStory
     };
 
     if (views[view]) {
@@ -153,6 +155,7 @@ var App = (function() {
       { label: "Blend the Word",     icon: "🔤", view: "blend" },
       { label: "Listen & Choose",    icon: "👂", view: "listen" },
       { label: "Word Families",      icon: "📚", view: "families" },
+      { label: "Stories",            icon: "📖", view: "stories" },
       { label: "Practice Calendar",  icon: "📅", view: "calendar" },
       { label: "Parent Settings",    icon: "⚙️",  view: "settings" }
     ];
@@ -524,6 +527,7 @@ var App = (function() {
       var todayKey = getTodayKey();
       var settings = getSettings();
       var monthData = getMonthProgress(currentYear, currentMonth);
+      var storyMonthData = getMonthStoryProgress(currentYear, currentMonth);
 
       var monthNames = ["January","February","March","April","May","June",
                         "July","August","September","October","November","December"];
@@ -588,6 +592,10 @@ var App = (function() {
           cell.appendChild(el("span", { class: "cal-dot", text: "·" }));
         }
 
+        if (storyMonthData[dateKey] && storyMonthData[dateKey].attempts > 0) {
+          cell.appendChild(el("span", { class: "cal-story", text: "📖" }));
+        }
+
         grid.appendChild(cell);
       }
 
@@ -610,6 +618,258 @@ var App = (function() {
     }
 
     render();
+  }
+
+  // ── Stories list ──────────────────────────────────────────────────────────
+
+  function renderStories() {
+    setBackButton(true, "← Home");
+    setHeaderTitle("Stories");
+
+    var app = $("#app");
+    app.innerHTML = "";
+
+    var todayStory = getTodayStoryProgress();
+
+    var intro = el("p", { class: "section-intro", text: "Choose a story to read and practise." });
+    app.appendChild(intro);
+
+    var grid = el("div", { class: "story-grid" });
+
+    stories.forEach(function(story) {
+      var card = el("button", { class: "story-card" });
+
+      card.appendChild(el("span", { class: "story-card-emoji", text: story.emoji }));
+      card.appendChild(el("span", { class: "story-card-title", text: story.title }));
+      card.appendChild(el("span", { class: "story-card-meta", text: story.level + " · " + story.duration }));
+
+      if (todayStory.storyId === story.id && todayStory.attempts > 0) {
+        var badge = todayStory.completed
+          ? el("span", { class: "story-done-badge", text: "Done today ✓" })
+          : el("span", { class: "story-done-badge", text: todayStory.correctWords.length + "/3 today" });
+        card.appendChild(badge);
+      }
+
+      card.addEventListener("click", function() {
+        navigate("story", { id: story.id, mode: "read", page: 0 });
+      });
+
+      grid.appendChild(card);
+    });
+
+    app.appendChild(grid);
+  }
+
+  // ── Story reader ───────────────────────────────────────────────────────────
+
+  function renderStory(params) {
+    var storyId = params.id;
+    var mode = params.mode || "read";
+    var pageIdx = params.page || 0;
+
+    var story = null;
+    for (var i = 0; i < stories.length; i++) {
+      if (stories[i].id === storyId) { story = stories[i]; break; }
+    }
+    if (!story) { navigate("stories"); return; }
+
+    setBackButton(true, "← Stories");
+    var backBtn = $("#back-btn");
+    if (backBtn) {
+      backBtn.onclick = null;
+      backBtn.addEventListener("click", function() { navigate("stories"); });
+    }
+    setHeaderTitle(story.title);
+
+    var app = $("#app");
+    app.innerHTML = "";
+
+    // Title + emoji
+    app.appendChild(el("div", { class: "story-title-display",
+      text: story.emoji + "  " + story.title }));
+
+    // Mode tabs
+    var tabs = el("div", { class: "mode-tabs" });
+    ["read","listen","practice"].forEach(function(m) {
+      var label = m === "read" ? "📖 Read" : m === "listen" ? "🔊 Listen" : "✏️ Practise";
+      var tab = el("button", {
+        class: "mode-tab" + (mode === m ? " mode-tab-active" : "")
+      });
+      tab.textContent = label;
+      tab.addEventListener("click", function() {
+        navigate("story", { id: storyId, mode: m, page: 0 });
+      });
+      tabs.appendChild(tab);
+    });
+    app.appendChild(tabs);
+
+    // ── Read mode ────────────────────────────────────────────────────────────
+    if (mode === "read") {
+      var page = story.pages[pageIdx];
+
+      var pageBox = el("div", { class: "story-page", text: page.text });
+      app.appendChild(pageBox);
+
+      var nav = el("div", { class: "story-nav" });
+      var prevBtn = el("button", { class: "btn btn-neutral", text: "← Prev" });
+      prevBtn.disabled = pageIdx === 0;
+      prevBtn.addEventListener("click", function() {
+        navigate("story", { id: storyId, mode: "read", page: pageIdx - 1 });
+      });
+
+      var counter = el("span", { class: "story-page-counter",
+        text: (pageIdx + 1) + " / " + story.pages.length });
+
+      var nextBtn = el("button", { class: "btn btn-neutral", text: "Next →" });
+      if (pageIdx >= story.pages.length - 1) {
+        nextBtn.textContent = "Done ✓";
+        nextBtn.addEventListener("click", function() {
+          navigate("story", { id: storyId, mode: "practice", page: 0 });
+        });
+      } else {
+        nextBtn.addEventListener("click", function() {
+          navigate("story", { id: storyId, mode: "read", page: pageIdx + 1 });
+        });
+      }
+
+      nav.appendChild(prevBtn);
+      nav.appendChild(counter);
+      nav.appendChild(nextBtn);
+      app.appendChild(nav);
+
+      // Key words on current page
+      if (page.words && page.words.length) {
+        var wordRow = el("div", { class: "story-page-words" });
+        page.words.forEach(function(w) {
+          wordRow.appendChild(el("span", { class: "story-word-pill", text: w }));
+        });
+        app.appendChild(wordRow);
+      }
+
+      // Moral on last page
+      if (pageIdx === story.pages.length - 1 && story.moral) {
+        app.appendChild(el("div", { class: "story-moral", text: "“" + story.moral + "”" }));
+      }
+    }
+
+    // ── Listen mode ──────────────────────────────────────────────────────────
+    if (mode === "listen") {
+      var page = story.pages[pageIdx];
+
+      var pageBox = el("div", { class: "story-page", text: page.text });
+      app.appendChild(pageBox);
+
+      var playBtn = el("button", { class: "btn btn-primary story-listen-btn", text: "🔊  Play audio" });
+      playBtn.addEventListener("click", function() {
+        playAudio(story.audioFile);
+      });
+      app.appendChild(playBtn);
+
+      var nav = el("div", { class: "story-nav" });
+      var prevBtn = el("button", { class: "btn btn-neutral", text: "← Prev" });
+      prevBtn.disabled = pageIdx === 0;
+      prevBtn.addEventListener("click", function() {
+        navigate("story", { id: storyId, mode: "listen", page: pageIdx - 1 });
+      });
+
+      var counter = el("span", { class: "story-page-counter",
+        text: (pageIdx + 1) + " / " + story.pages.length });
+
+      var nextBtn = el("button", { class: "btn btn-neutral", text: "Next →" });
+      if (pageIdx >= story.pages.length - 1) {
+        nextBtn.textContent = "Practise →";
+        nextBtn.addEventListener("click", function() {
+          navigate("story", { id: storyId, mode: "practice", page: 0 });
+        });
+      } else {
+        nextBtn.addEventListener("click", function() {
+          navigate("story", { id: storyId, mode: "listen", page: pageIdx + 1 });
+        });
+      }
+
+      nav.appendChild(prevBtn);
+      nav.appendChild(counter);
+      nav.appendChild(nextBtn);
+      app.appendChild(nav);
+    }
+
+    // ── Practice mode ────────────────────────────────────────────────────────
+    if (mode === "practice") {
+      var words = story.practiceWords;
+      var wordIdx = params.page || 0;
+
+      // Finished all words — show summary
+      if (wordIdx >= words.length) {
+        var todayStory = getTodayStoryProgress();
+        var isDone = todayStory.completed;
+
+        var summary = el("div", {
+          class: "practice-summary " + (isDone ? "summary-done" : "")
+        });
+        summary.innerHTML = isDone
+          ? "<strong>Well done! ✓</strong><br>Today’s story practice complete!"
+          : "<strong>Keep going!</strong><br>" + todayStory.correctWords.length + " / 3 words correct today.";
+        app.appendChild(summary);
+
+        if (story.comprehensionQuestion) {
+          var qBox = el("div", { class: "story-question" });
+          qBox.innerHTML = "<strong>Think about it:</strong> " + story.comprehensionQuestion;
+          app.appendChild(qBox);
+        }
+
+        if (story.moral) {
+          app.appendChild(el("div", { class: "story-moral",
+            text: "“" + story.moral + "”" }));
+        }
+
+        var againBtn = el("button", { class: "btn btn-primary", text: "Practise again" });
+        againBtn.addEventListener("click", function() {
+          navigate("story", { id: storyId, mode: "practice", page: 0 });
+        });
+        var backBtn2 = el("button", { class: "btn btn-neutral", text: "← All stories" });
+        backBtn2.addEventListener("click", function() { navigate("stories"); });
+        var row = el("div", { class: "feedback-row" });
+        row.appendChild(againBtn);
+        row.appendChild(backBtn2);
+        app.appendChild(row);
+        return;
+      }
+
+      var currentWord = words[wordIdx];
+
+      app.appendChild(el("div", { class: "practice-word-card", text: currentWord }));
+      app.appendChild(el("div", { class: "practice-counter",
+        text: "Word " + (wordIdx + 1) + " of " + words.length }));
+
+      var btnRow = el("div", { class: "feedback-row" });
+
+      var correctBtn = el("button", { class: "btn btn-success", text: "✓  I know it!" });
+      correctBtn.addEventListener("click", function() {
+        recordStoryAttempt(story.id, story.title, currentWord, true);
+        var day = getTodayStoryProgress();
+        if (day.completed && day.correctWords.length === 3) {
+          showToast("Story practice done! ✓", true);
+        } else {
+          showToast("Well done!", true);
+        }
+        navigate("story", { id: storyId, mode: "practice", page: wordIdx + 1 });
+      });
+
+      var tryBtn = el("button", { class: "btn btn-soft", text: "↩  Try again" });
+      tryBtn.addEventListener("click", function() {
+        recordStoryAttempt(story.id, story.title, currentWord, false);
+        showToast("Keep practising!", false);
+        navigate("story", { id: storyId, mode: "practice", page: wordIdx + 1 });
+      });
+
+      btnRow.appendChild(correctBtn);
+      btnRow.appendChild(tryBtn);
+      app.appendChild(btnRow);
+
+      var day = getTodayStoryProgress();
+      app.appendChild(el("div", { class: "progress-note",
+        text: "Today: " + day.correctWords.length + " / 3 story words" }));
+    }
   }
 
   // ── Parent Settings ────────────────────────────────────────────────────────
