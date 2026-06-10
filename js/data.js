@@ -150,7 +150,115 @@ const WORDS = [
   { word: "hum", family: "um", phonemes: ["h", "u", "m"],  emoji: "🎵" },
   { word: "mum", family: "um", phonemes: ["m", "u", "m"],  emoji: "👩" },
   { word: "sum", family: "um", phonemes: ["s", "u", "m"],  emoji: "➕" },
-  { word: "yum", family: "um", phonemes: ["y", "u", "m"],  emoji: "😋" }
+  { word: "yum", family: "um", phonemes: ["y", "u", "m"],  emoji: "😋" },
+
+  // ── Blue Series — consonant blends ──────────────────────────────────────
+
+  // fl
+  { word: "flag", series: "blue", family: "fl", phonemes: ["f","l","a","g"], emoji: "🚩" },
+  { word: "flat", series: "blue", family: "fl", phonemes: ["f","l","a","t"], emoji: "" },
+  { word: "flip", series: "blue", family: "fl", phonemes: ["f","l","i","p"], emoji: "" },
+
+  // fr
+  { word: "frog", series: "blue", family: "fr", phonemes: ["f","r","o","g"], emoji: "🐸" },
+  { word: "fret", series: "blue", family: "fr", phonemes: ["f","r","e","t"], emoji: "" },
+
+  // bl
+  { word: "blob", series: "blue", family: "bl", phonemes: ["b","l","o","b"], emoji: "" },
+  { word: "blot", series: "blue", family: "bl", phonemes: ["b","l","o","t"], emoji: "" },
+  { word: "bled", series: "blue", family: "bl", phonemes: ["b","l","e","d"], emoji: "" },
+
+  // cl
+  { word: "clap", series: "blue", family: "cl", phonemes: ["k","l","a","p"], emoji: "👏" },
+  { word: "clip", series: "blue", family: "cl", phonemes: ["k","l","i","p"], emoji: "📎" },
+  { word: "clop", series: "blue", family: "cl", phonemes: ["k","l","o","p"], emoji: "🐴" },
+
+  // cr
+  { word: "crab", series: "blue", family: "cr", phonemes: ["k","r","a","b"], emoji: "🦀" },
+  { word: "crop", series: "blue", family: "cr", phonemes: ["k","r","o","p"], emoji: "🌾" },
+  { word: "cram", series: "blue", family: "cr", phonemes: ["k","r","a","m"], emoji: "" },
+
+  // dr
+  { word: "drip", series: "blue", family: "dr", phonemes: ["d","r","i","p"], emoji: "💧" },
+  { word: "drop", series: "blue", family: "dr", phonemes: ["d","r","o","p"], emoji: "💧" },
+  { word: "drum", series: "blue", family: "dr", phonemes: ["d","r","u","m"], emoji: "🥁" },
+
+  // gr
+  { word: "grab", series: "blue", family: "gr", phonemes: ["g","r","a","b"], emoji: "" },
+  { word: "grin", series: "blue", family: "gr", phonemes: ["g","r","i","n"], emoji: "😁" },
+  { word: "grip", series: "blue", family: "gr", phonemes: ["g","r","i","p"], emoji: "" },
+
+  // pl
+  { word: "plan", series: "blue", family: "pl", phonemes: ["p","l","a","n"], emoji: "📋" },
+  { word: "plop", series: "blue", family: "pl", phonemes: ["p","l","o","p"], emoji: "" },
+  { word: "plug", series: "blue", family: "pl", phonemes: ["p","l","u","g"], emoji: "🔌" },
+
+  // sl
+  { word: "slap", series: "blue", family: "sl", phonemes: ["s","l","a","p"], emoji: "" },
+  { word: "slim", series: "blue", family: "sl", phonemes: ["s","l","i","m"], emoji: "" },
+  { word: "slip", series: "blue", family: "sl", phonemes: ["s","l","i","p"], emoji: "🍌" },
+
+  // sn
+  { word: "snap", series: "blue", family: "sn", phonemes: ["s","n","a","p"], emoji: "" },
+  { word: "snip", series: "blue", family: "sn", phonemes: ["s","n","i","p"], emoji: "✂️" },
+
+  // sp
+  { word: "spin", series: "blue", family: "sp", phonemes: ["s","p","i","n"], emoji: "🌀" },
+  { word: "spot", series: "blue", family: "sp", phonemes: ["s","p","o","t"], emoji: "🔵" },
+  { word: "span", series: "blue", family: "sp", phonemes: ["s","p","a","n"], emoji: "" },
+
+  // st
+  { word: "step", series: "blue", family: "st", phonemes: ["s","t","e","p"], emoji: "👣" },
+  { word: "stop", series: "blue", family: "st", phonemes: ["s","t","o","p"], emoji: "🛑" },
+  { word: "stem", series: "blue", family: "st", phonemes: ["s","t","e","m"], emoji: "🌱" },
+
+  // sw
+  { word: "swim", series: "blue", family: "sw", phonemes: ["s","w","i","m"], emoji: "🏊" },
+  { word: "swam", series: "blue", family: "sw", phonemes: ["s","w","a","m"], emoji: "🏊" },
+
+  // tr
+  { word: "trap", series: "blue", family: "tr", phonemes: ["t","r","a","p"], emoji: "" },
+  { word: "trim", series: "blue", family: "tr", phonemes: ["t","r","i","m"], emoji: "✂️" },
+  { word: "trip", series: "blue", family: "tr", phonemes: ["t","r","i","p"], emoji: "🧳" },
+  { word: "trot", series: "blue", family: "tr", phonemes: ["t","r","o","t"], emoji: "🐴" },
+
+  // sk
+  { word: "skip", series: "blue", family: "sk", phonemes: ["s","k","i","p"], emoji: "🤸" },
+  { word: "skid", series: "blue", family: "sk", phonemes: ["s","k","i","d"], emoji: "" },
+
+  // ── Green Series — digraphs ──────────────────────────────────────────────
+
+  // sh
+  { word: "ship", series: "green", family: "sh", phonemes: ["sh","i","p"],   emoji: "🚢" },
+  { word: "shop", series: "green", family: "sh", phonemes: ["sh","o","p"],   emoji: "🛒" },
+  { word: "shed", series: "green", family: "sh", phonemes: ["sh","e","d"],   emoji: "🏚️" },
+  { word: "shin", series: "green", family: "sh", phonemes: ["sh","i","n"],   emoji: "🦵" },
+  { word: "shut", series: "green", family: "sh", phonemes: ["sh","u","t"],   emoji: "🚪" },
+  { word: "shot", series: "green", family: "sh", phonemes: ["sh","o","t"],   emoji: "" },
+
+  // ch
+  { word: "chin", series: "green", family: "ch", phonemes: ["ch","i","n"],   emoji: "" },
+  { word: "chip", series: "green", family: "ch", phonemes: ["ch","i","p"],   emoji: "🍟" },
+  { word: "chop", series: "green", family: "ch", phonemes: ["ch","o","p"],   emoji: "🔪" },
+  { word: "chat", series: "green", family: "ch", phonemes: ["ch","a","t"],   emoji: "💬" },
+
+  // th (unvoiced — uses th.mp3)
+  { word: "thin", series: "green", family: "th", phonemes: ["th","i","n"],   emoji: "" },
+  { word: "math", series: "green", family: "th", phonemes: ["m","a","th"],   emoji: "🔢" },
+  { word: "path", series: "green", family: "th", phonemes: ["p","a","th"],   emoji: "🛤️" },
+  { word: "bath", series: "green", family: "th", phonemes: ["b","a","th"],   emoji: "🛁" },
+  { word: "with", series: "green", family: "th", phonemes: ["w","i","th"],   emoji: "" },
+
+  // ng
+  { word: "ring", series: "green", family: "ng", phonemes: ["r","i","ng"],   emoji: "💍" },
+  { word: "sing", series: "green", family: "ng", phonemes: ["s","i","ng"],   emoji: "🎤" },
+  { word: "king", series: "green", family: "ng", phonemes: ["k","i","ng"],   emoji: "👑" },
+  { word: "wing", series: "green", family: "ng", phonemes: ["w","i","ng"],   emoji: "🪽" },
+  { word: "song", series: "green", family: "ng", phonemes: ["s","o","ng"],   emoji: "🎵" },
+  { word: "long", series: "green", family: "ng", phonemes: ["l","o","ng"],   emoji: "" },
+  { word: "lung", series: "green", family: "ng", phonemes: ["l","u","ng"],   emoji: "🫁" },
+  { word: "hung", series: "green", family: "ng", phonemes: ["h","u","ng"],   emoji: "" },
+  { word: "sung", series: "green", family: "ng", phonemes: ["s","u","ng"],   emoji: "🎶" }
 ];
 
 const FAMILIES = [...new Set(WORDS.map(w => w.family))];

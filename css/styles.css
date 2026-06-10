@@ -135,6 +135,78 @@ header {
   font-size: 0.95rem;
 }
 
+/* ── Series colors ───────────────────────────────────────────────────────── */
+
+:root {
+  --pink-color:  #c06080;
+  --pink-bg:     #fce8ef;
+  --blue-color:  #2060a0;
+  --blue-bg:     #ddeeff;
+  --green-color: #206040;
+  --green-bg:    #ddf2e8;
+}
+
+.series-pink  { --s-color: var(--pink-color);  --s-bg: var(--pink-bg); }
+.series-blue  { --s-color: var(--blue-color);  --s-bg: var(--blue-bg); }
+.series-green { --s-color: var(--green-color); --s-bg: var(--green-bg); }
+
+/* ── Series badges (home) ────────────────────────────────────────────────── */
+
+.series-badges {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.series-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border: 1.5px solid transparent;
+}
+
+.series-badge.series-active {
+  background: var(--s-bg);
+  color: var(--s-color);
+  border-color: var(--s-color);
+}
+
+.series-badge.series-locked {
+  background: var(--surface);
+  color: var(--text-muted);
+  border-color: var(--border);
+  opacity: 0.6;
+}
+
+/* ── Family dot (word families grid) ────────────────────────────────────── */
+
+.family-series-dot {
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+/* ── Settings section title ──────────────────────────────────────────────── */
+
+.setting-section-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.series-setting-pink  { color: var(--pink-color); }
+.series-setting-blue  { color: var(--blue-color); }
+.series-setting-green { color: var(--green-color); }
+
 /* ── Status bar (home) ───────────────────────────────────────────────────── */
 
 .status-bar {

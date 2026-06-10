@@ -8,7 +8,9 @@ var DEFAULT_SETTINGS = {
   numChoices: 3,
   phonemeDelay: 350,
   showWordInListen: false,
-  dailyTarget: 3
+  dailyTarget: 3,
+  enableBlue: false,
+  enableGreen: false
 };
 
 // ── Settings ────────────────────────────────────────────────────────────────

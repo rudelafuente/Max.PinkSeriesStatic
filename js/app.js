@@ -19,6 +19,40 @@ var App = (function() {
     return shuffleArray([correct].concat(distractors));
   }
 
+  function getActiveWords() {
+    var s = getSettings();
+    return WORDS.filter(function(w) {
+      var series = w.series || "pink";
+      if (series === "blue" && !s.enableBlue) return false;
+      if (series === "green" && !s.enableGreen) return false;
+      return true;
+    });
+  }
+
+  function randomActiveWord(excludeWord) {
+    var pool = getActiveWords();
+    if (excludeWord) pool = pool.filter(function(w) { return w.word !== excludeWord; });
+    if (!pool.length) pool = getActiveWords();
+    return pool[Math.floor(Math.random() * pool.length)];
+  }
+
+  function getActiveFamilies() {
+    var seen = {};
+    var result = [];
+    getActiveWords().forEach(function(w) {
+      if (!seen[w.family]) { seen[w.family] = true; result.push(w.family); }
+    });
+    return result;
+  }
+
+  var SERIES_META = {
+    pink:  { label: "Pink",  icon: "🌸", color: "series-pink" },
+    blue:  { label: "Blue",  icon: "🔵", color: "series-blue" },
+    green: { label: "Green", icon: "🟢", color: "series-green" }
+  };
+
+  function wordSeries(word) { return word.series || "pink"; }
+
   function $(selector) { return document.querySelector(selector); }
 
   function el(tag, attrs, children) {
@@ -133,7 +167,24 @@ var App = (function() {
       grid.appendChild(card);
     });
 
+    // Series badges
+    var settings = getSettings();
+    var badgeRow = el("div", { class: "series-badges" });
+    [
+      { key: "pink",  active: true },
+      { key: "blue",  active: settings.enableBlue },
+      { key: "green", active: settings.enableGreen }
+    ].forEach(function(s) {
+      var meta = SERIES_META[s.key];
+      var badge = el("span", {
+        class: "series-badge " + meta.color + (s.active ? " series-active" : " series-locked"),
+        html: meta.icon + " " + meta.label + (s.active ? "" : " 🔒")
+      });
+      badgeRow.appendChild(badge);
+    });
+
     app.appendChild(statusBar);
+    app.appendChild(badgeRow);
     app.appendChild(grid);
   }
 
@@ -144,7 +195,11 @@ var App = (function() {
     setHeaderTitle("Blend the Word");
 
     var settings = getSettings();
-    var pool = params.family ? getWordsByFamily(params.family) : WORDS;
+    var activeWords = getActiveWords();
+    var pool = params.family
+      ? activeWords.filter(function(w) { return w.family === params.family; })
+      : activeWords;
+    if (!pool.length) pool = activeWords;
     var currentWord = pool[Math.floor(Math.random() * pool.length)];
     var answered = false;
 
@@ -188,7 +243,7 @@ var App = (function() {
           showToast("Good blending!", true);
         }
         setTimeout(function() {
-          currentWord = getRandomWord(currentWord.word);
+          currentWord = randomActiveWord(currentWord.word);
           render();
         }, 800);
       });
@@ -211,7 +266,7 @@ var App = (function() {
       // Next word
       var nextBtn = el("button", { class: "btn btn-neutral", text: "Next word →" });
       nextBtn.addEventListener("click", function() {
-        currentWord = getRandomWord(currentWord.word);
+        currentWord = randomActiveWord(currentWord.word);
         render();
       });
 
@@ -244,8 +299,8 @@ var App = (function() {
 
     function nextRound() {
       answered = false;
-      currentWord = getRandomWord(currentWord ? currentWord.word : null);
-      choices = getChoices(currentWord, WORDS, settings.numChoices);
+      currentWord = randomActiveWord(currentWord ? currentWord.word : null);
+      choices = getChoices(currentWord, getActiveWords(), settings.numChoices);
       render();
     }
 
@@ -364,11 +419,15 @@ var App = (function() {
 
     var grid = el("div", { class: "family-grid" });
 
-    FAMILIES.forEach(function(family) {
-      var words = getWordsByFamily(family);
+    getActiveFamilies().forEach(function(family) {
+      var words = getActiveWords().filter(function(w) { return w.family === family; });
+      var series = wordSeries(words[0]);
+      var meta = SERIES_META[series] || SERIES_META.pink;
       var card = el("button", { class: "family-card" });
+      var dot = el("span", { class: "family-series-dot " + meta.color, text: meta.icon });
       var label = el("span", { class: "family-label", text: "-" + family });
       var count = el("span", { class: "family-count", text: words.length + " words" });
+      card.appendChild(dot);
       card.appendChild(label);
       card.appendChild(count);
       card.addEventListener("click", function() {
@@ -622,6 +681,27 @@ var App = (function() {
       class: "setting-input setting-number"
     });
 
+    // Series selection
+    var seriesTitle = el("div", { class: "setting-section-title", text: "Series" });
+
+    var pinkWrap = el("label", { class: "setting-checkbox-label series-setting-pink" });
+    var pinkCheck = el("input", { type: "checkbox", disabled: "disabled" });
+    pinkCheck.checked = true;
+    pinkWrap.appendChild(pinkCheck);
+    pinkWrap.appendChild(document.createTextNode(" 🌸 Pink Series — CVC words (always active)"));
+
+    var blueWrap = el("label", { class: "setting-checkbox-label series-setting-blue", id: "wrap-blue" });
+    var blueCheck = el("input", { type: "checkbox", id: "s-blue" });
+    blueCheck.checked = !!settings.enableBlue;
+    blueWrap.appendChild(blueCheck);
+    blueWrap.appendChild(document.createTextNode(" 🔵 Blue Series — consonant blends (flag, frog, drum…)"));
+
+    var greenWrap = el("label", { class: "setting-checkbox-label series-setting-green", id: "wrap-green" });
+    var greenCheck = el("input", { type: "checkbox", id: "s-green" });
+    greenCheck.checked = !!settings.enableGreen;
+    greenWrap.appendChild(greenCheck);
+    greenWrap.appendChild(document.createTextNode(" 🟢 Green Series — digraphs (sh, ch, th, ng…)"));
+
     // Save button
     var saveBtn = el("button", { class: "btn btn-primary", text: "Save settings" });
     saveBtn.addEventListener("click", function() {
@@ -631,7 +711,9 @@ var App = (function() {
           $("input[name=numChoices]:checked").value : "3"),
         phonemeDelay: parseInt(delayRange.value),
         showWordInListen: showWordCheck.checked,
-        dailyTarget: Math.max(1, parseInt(targetInput.value) || 3)
+        dailyTarget: Math.max(1, parseInt(targetInput.value) || 3),
+        enableBlue: blueCheck.checked,
+        enableGreen: greenCheck.checked
       };
       saveSettings(newSettings);
       showToast("Settings saved", true);
@@ -651,6 +733,7 @@ var App = (function() {
      delayLabel, delayRange,
      showWordWrap,
      targetLabel, targetInput,
+     seriesTitle, pinkWrap, blueWrap, greenWrap,
      saveBtn, clearBtn
     ].forEach(function(node) { form.appendChild(node); });
 
