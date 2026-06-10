@@ -20,12 +20,9 @@ var App = (function() {
   }
 
   function getActiveWords() {
-    var s = getSettings();
+    var active = getSettings().activeSeries || "pink";
     return WORDS.filter(function(w) {
-      var series = w.series || "pink";
-      if (series === "blue" && !s.enableBlue) return false;
-      if (series === "green" && !s.enableGreen) return false;
-      return true;
+      return (w.series || "pink") === active;
     });
   }
 

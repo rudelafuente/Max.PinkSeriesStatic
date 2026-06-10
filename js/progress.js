@@ -9,8 +9,7 @@ var DEFAULT_SETTINGS = {
   phonemeDelay: 350,
   showWordInListen: false,
   dailyTarget: 3,
-  enableBlue: false,
-  enableGreen: false
+  activeSeries: "pink"
 };
 
 // ── Settings ────────────────────────────────────────────────────────────────
