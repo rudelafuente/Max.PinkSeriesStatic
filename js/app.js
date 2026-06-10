@@ -166,16 +166,14 @@ var App = (function() {
 
     // Series badges
     var settings = getSettings();
+    var active = settings.activeSeries || "pink";
     var badgeRow = el("div", { class: "series-badges" });
-    [
-      { key: "pink",  active: true },
-      { key: "blue",  active: settings.enableBlue },
-      { key: "green", active: settings.enableGreen }
-    ].forEach(function(s) {
-      var meta = SERIES_META[s.key];
+    ["pink", "blue", "green"].forEach(function(key) {
+      var meta = SERIES_META[key];
+      var isActive = key === active;
       var badge = el("span", {
-        class: "series-badge " + meta.color + (s.active ? " series-active" : " series-locked"),
-        html: meta.icon + " " + meta.label + (s.active ? "" : " 🔒")
+        class: "series-badge " + meta.color + (isActive ? " series-active" : " series-other"),
+        html: meta.icon + " " + meta.label
       });
       badgeRow.appendChild(badge);
     });
@@ -679,25 +677,38 @@ var App = (function() {
     });
 
     // Series selection
-    var seriesTitle = el("div", { class: "setting-section-title", text: "Series" });
+    var seriesTitle = el("div", { class: "setting-section-title", text: "Active series" });
+    var activeSeries = settings.activeSeries || "pink";
 
-    var pinkWrap = el("label", { class: "setting-checkbox-label series-setting-pink" });
-    var pinkCheck = el("input", { type: "checkbox", disabled: "disabled" });
-    pinkCheck.checked = true;
-    pinkWrap.appendChild(pinkCheck);
-    pinkWrap.appendChild(document.createTextNode(" 🌸 Pink Series — CVC words (always active)"));
-
-    var blueWrap = el("label", { class: "setting-checkbox-label series-setting-blue", id: "wrap-blue" });
-    var blueCheck = el("input", { type: "checkbox", id: "s-blue" });
-    blueCheck.checked = !!settings.enableBlue;
-    blueWrap.appendChild(blueCheck);
-    blueWrap.appendChild(document.createTextNode(" 🔵 Blue Series — consonant blends (flag, frog, drum…)"));
-
-    var greenWrap = el("label", { class: "setting-checkbox-label series-setting-green", id: "wrap-green" });
-    var greenCheck = el("input", { type: "checkbox", id: "s-green" });
-    greenCheck.checked = !!settings.enableGreen;
-    greenWrap.appendChild(greenCheck);
-    greenWrap.appendChild(document.createTextNode(" 🟢 Green Series — digraphs (sh, ch, th, ng…)"));
+    var seriesGrid = el("div", { class: "series-radio-grid" });
+    var seriesDefs = [
+      { key: "pink",  icon: "🌸", label: "Pink",  desc: "CVC words — short vowels" },
+      { key: "blue",  icon: "🔵", label: "Blue",  desc: "Consonant blends — flag, frog, drum…" },
+      { key: "green", icon: "🟢", label: "Green", desc: "Digraphs — sh, ch, th, ng…" }
+    ];
+    seriesDefs.forEach(function(s) {
+      var radioCard = el("label", {
+        class: "series-radio-card " + SERIES_META[s.key].color +
+               (activeSeries === s.key ? " series-radio-active" : "")
+      });
+      var radio = el("input", { type: "radio", name: "activeSeries", value: s.key });
+      if (activeSeries === s.key) radio.setAttribute("checked", "checked");
+      radio.addEventListener("change", function() {
+        seriesGrid.querySelectorAll(".series-radio-card").forEach(function(c) {
+          c.classList.remove("series-radio-active");
+        });
+        radioCard.classList.add("series-radio-active");
+      });
+      var icon = el("span", { class: "series-radio-icon", text: s.icon });
+      var name = el("span", { class: "series-radio-name", text: s.label + " Series" });
+      var desc = el("span", { class: "series-radio-desc", text: s.desc });
+      radioCard.appendChild(radio);
+      radioCard.appendChild(icon);
+      radioCard.appendChild(name);
+      radioCard.appendChild(desc);
+      seriesGrid.appendChild(radioCard);
+    });
+    var blueWrap = null, greenWrap = null; // kept to avoid reference errors below
 
     // Save button
     var saveBtn = el("button", { class: "btn btn-primary", text: "Save settings" });
@@ -709,8 +720,7 @@ var App = (function() {
         phonemeDelay: parseInt(delayRange.value),
         showWordInListen: showWordCheck.checked,
         dailyTarget: Math.max(1, parseInt(targetInput.value) || 3),
-        enableBlue: blueCheck.checked,
-        enableGreen: greenCheck.checked
+        activeSeries: ($("input[name=activeSeries]:checked") || { value: "pink" }).value
       };
       saveSettings(newSettings);
       showToast("Settings saved", true);
@@ -730,7 +740,7 @@ var App = (function() {
      delayLabel, delayRange,
      showWordWrap,
      targetLabel, targetInput,
-     seriesTitle, pinkWrap, blueWrap, greenWrap,
+     seriesTitle, seriesGrid,
      saveBtn, clearBtn
     ].forEach(function(node) { form.appendChild(node); });
 
