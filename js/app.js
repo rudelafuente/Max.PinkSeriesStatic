@@ -55,6 +55,14 @@ var App = (function() {
 
   function wordSeries(word) { return word.series || "pink"; }
 
+  function findWordEntry(wordText) {
+    var target = String(wordText || "").toLowerCase();
+    for (var i = 0; i < WORDS.length; i++) {
+      if (WORDS[i].word === target) return WORDS[i];
+    }
+    return null;
+  }
+
   function $(selector) { return document.querySelector(selector); }
 
   function el(tag, attrs, children) {
@@ -75,6 +83,40 @@ var App = (function() {
       });
     }
     return node;
+  }
+
+  function createWordReveal(wordText, textClass, revealClass) {
+    var wordEntry = findWordEntry(wordText);
+    var wrap = el("div", { class: "word-reveal-wrap" });
+    var trigger = el("button", {
+      class: textClass + (wordEntry && wordEntry.emoji ? " word-reveal-trigger" : ""),
+      type: "button",
+      text: wordText
+    });
+
+    wrap.appendChild(trigger);
+
+    if (wordEntry && wordEntry.emoji) {
+      var hint = el("div", { class: "word-reveal-hint", text: "Tap to see drawing" });
+      var reveal = el("div", {
+        class: revealClass + " word-reveal-art",
+        text: wordEntry.emoji
+      });
+      trigger.setAttribute("aria-expanded", "false");
+      reveal.hidden = true;
+
+      trigger.addEventListener("click", function() {
+        var isHidden = reveal.hidden;
+        reveal.hidden = !isHidden;
+        trigger.setAttribute("aria-expanded", isHidden ? "true" : "false");
+        hint.textContent = isHidden ? "Tap again to hide" : "Tap to see drawing";
+      });
+
+      wrap.appendChild(hint);
+      wrap.appendChild(reveal);
+    }
+
+    return wrap;
   }
 
   // ── Toast ──────────────────────────────────────────────────────────────────
@@ -225,11 +267,7 @@ var App = (function() {
       app.innerHTML = "";
       answered = false;
 
-      // Emoji + word display
-      if (currentWord.emoji) {
-        app.appendChild(el("div", { class: "word-emoji", text: currentWord.emoji }));
-      }
-      var wordDisplay = el("div", { class: "word-display", text: currentWord.word });
+      var wordDisplay = createWordReveal(currentWord.word, "word-display", "word-emoji");
 
       // Phoneme buttons
       var phonemeRow = el("div", { class: "phoneme-row" });
@@ -336,7 +374,7 @@ var App = (function() {
 
       // Optional word hint
       if (settings.showWordInListen) {
-        var hint = el("div", { class: "word-hint", text: currentWord.word });
+        var hint = createWordReveal(currentWord.word, "word-hint", "word-emoji");
         app.appendChild(instr);
         app.appendChild(playBtn);
         app.appendChild(hint);
@@ -476,10 +514,7 @@ var App = (function() {
       backFam.addEventListener("click", function() { navigate("families"); });
       app.appendChild(backFam);
 
-      if (wordItem.emoji) {
-        app.appendChild(el("div", { class: "word-emoji", text: wordItem.emoji }));
-      }
-      var wordDisplay = el("div", { class: "word-display", text: wordItem.word });
+      var wordDisplay = createWordReveal(wordItem.word, "word-display", "word-emoji");
 
       var phonemeRow = el("div", { class: "phoneme-row" });
       wordItem.phonemes.forEach(function(ph) {
@@ -760,7 +795,7 @@ var App = (function() {
       if (page.words && page.words.length) {
         var wordRow = el("div", { class: "story-page-words" });
         page.words.forEach(function(w) {
-          wordRow.appendChild(el("span", { class: "story-word-pill", text: w }));
+          wordRow.appendChild(createWordReveal(w, "story-word-pill", "story-word-art"));
         });
         app.appendChild(wordRow);
       }
@@ -856,7 +891,7 @@ var App = (function() {
 
       var currentWord = words[wordIdx];
 
-      app.appendChild(el("div", { class: "practice-word-card", text: currentWord }));
+      app.appendChild(createWordReveal(currentWord, "practice-word-card", "practice-word-art"));
       app.appendChild(el("div", { class: "practice-counter",
         text: "Word " + (wordIdx + 1) + " of " + words.length }));
 
