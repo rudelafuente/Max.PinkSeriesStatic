@@ -47,7 +47,82 @@ const WORDS = [
   // -op family
   { word: "top", family: "op", phonemes: ["t", "o", "p"],  emoji: "🪀" },
   { word: "mop", family: "op", phonemes: ["m", "o", "p"],  emoji: "🧹" },
-  { word: "pop", family: "op", phonemes: ["p", "o", "p"],  emoji: "🎈" }
+  { word: "pop", family: "op", phonemes: ["p", "o", "p"],  emoji: "🎈" },
+
+  // -ag family
+  { word: "bag", family: "ag", phonemes: ["b", "a", "g"],  emoji: "👜" },
+  { word: "tag", family: "ag", phonemes: ["t", "a", "g"],  emoji: "🏷️" },
+  { word: "rag", family: "ag", phonemes: ["r", "a", "g"],  emoji: "🧹" },
+  { word: "nag", family: "ag", phonemes: ["n", "a", "g"],  emoji: "🐴" },
+  { word: "wag", family: "ag", phonemes: ["w", "a", "g"],  emoji: "🐶" },
+
+  // -ap family
+  { word: "cap", family: "ap", phonemes: ["k", "a", "p"],  emoji: "🧢" },
+  { word: "map", family: "ap", phonemes: ["m", "a", "p"],  emoji: "🗺️" },
+  { word: "nap", family: "ap", phonemes: ["n", "a", "p"],  emoji: "😴" },
+  { word: "tap", family: "ap", phonemes: ["t", "a", "p"],  emoji: "🚿" },
+  { word: "gap", family: "ap", phonemes: ["g", "a", "p"],  emoji: "" },
+
+  // -ed family
+  { word: "bed", family: "ed", phonemes: ["b", "e", "d"],  emoji: "🛏️" },
+  { word: "red", family: "ed", phonemes: ["r", "e", "d"],  emoji: "🔴" },
+  { word: "fed", family: "ed", phonemes: ["f", "e", "d"],  emoji: "🍼" },
+  { word: "led", family: "ed", phonemes: ["l", "e", "d"],  emoji: "💡" },
+  { word: "wed", family: "ed", phonemes: ["w", "e", "d"],  emoji: "💍" },
+
+  // -et family
+  { word: "jet", family: "et", phonemes: ["j", "e", "t"],  emoji: "✈️" },
+  { word: "net", family: "et", phonemes: ["n", "e", "t"],  emoji: "🥅" },
+  { word: "pet", family: "et", phonemes: ["p", "e", "t"],  emoji: "🐾" },
+  { word: "set", family: "et", phonemes: ["s", "e", "t"],  emoji: "" },
+  { word: "wet", family: "et", phonemes: ["w", "e", "t"],  emoji: "💧" },
+
+  // -ig family
+  { word: "big", family: "ig", phonemes: ["b", "i", "g"],  emoji: "🐘" },
+  { word: "dig", family: "ig", phonemes: ["d", "i", "g"],  emoji: "⛏️" },
+  { word: "fig", family: "ig", phonemes: ["f", "i", "g"],  emoji: "🍑" },
+  { word: "jig", family: "ig", phonemes: ["j", "i", "g"],  emoji: "💃" },
+  { word: "pig", family: "ig", phonemes: ["p", "i", "g"],  emoji: "🐷" },
+  { word: "wig", family: "ig", phonemes: ["w", "i", "g"],  emoji: "👱" },
+
+  // -ip family
+  { word: "dip", family: "ip", phonemes: ["d", "i", "p"],  emoji: "🫙" },
+  { word: "hip", family: "ip", phonemes: ["h", "i", "p"],  emoji: "" },
+  { word: "lip", family: "ip", phonemes: ["l", "i", "p"],  emoji: "💋" },
+  { word: "rip", family: "ip", phonemes: ["r", "i", "p"],  emoji: "" },
+  { word: "sip", family: "ip", phonemes: ["s", "i", "p"],  emoji: "🥤" },
+  { word: "tip", family: "ip", phonemes: ["t", "i", "p"],  emoji: "" },
+  { word: "zip", family: "ip", phonemes: ["z", "i", "p"],  emoji: "🤐" },
+
+  // -it family
+  { word: "bit", family: "it", phonemes: ["b", "i", "t"],  emoji: "" },
+  { word: "fit", family: "it", phonemes: ["f", "i", "t"],  emoji: "💪" },
+  { word: "hit", family: "it", phonemes: ["h", "i", "t"],  emoji: "🏏" },
+  { word: "kit", family: "it", phonemes: ["k", "i", "t"],  emoji: "🧰" },
+  { word: "sit", family: "it", phonemes: ["s", "i", "t"],  emoji: "🪑" },
+  { word: "wit", family: "it", phonemes: ["w", "i", "t"],  emoji: "" },
+
+  // -ot family
+  { word: "cot", family: "ot", phonemes: ["k", "o", "t"],  emoji: "🛏️" },
+  { word: "dot", family: "ot", phonemes: ["d", "o", "t"],  emoji: "🔵" },
+  { word: "got", family: "ot", phonemes: ["g", "o", "t"],  emoji: "" },
+  { word: "hot", family: "ot", phonemes: ["h", "o", "t"],  emoji: "🔥" },
+  { word: "lot", family: "ot", phonemes: ["l", "o", "t"],  emoji: "" },
+  { word: "pot", family: "ot", phonemes: ["p", "o", "t"],  emoji: "🪴" },
+
+  // -ub family
+  { word: "cub", family: "ub", phonemes: ["k", "u", "b"],  emoji: "🐻" },
+  { word: "hub", family: "ub", phonemes: ["h", "u", "b"],  emoji: "" },
+  { word: "rub", family: "ub", phonemes: ["r", "u", "b"],  emoji: "" },
+  { word: "sub", family: "ub", phonemes: ["s", "u", "b"],  emoji: "🥖" },
+  { word: "tub", family: "ub", phonemes: ["t", "u", "b"],  emoji: "🛁" },
+
+  // -ut family
+  { word: "but", family: "ut", phonemes: ["b", "u", "t"],  emoji: "" },
+  { word: "cut", family: "ut", phonemes: ["k", "u", "t"],  emoji: "✂️" },
+  { word: "gut", family: "ut", phonemes: ["g", "u", "t"],  emoji: "" },
+  { word: "hut", family: "ut", phonemes: ["h", "u", "t"],  emoji: "🛖" },
+  { word: "nut", family: "ut", phonemes: ["n", "u", "t"],  emoji: "🥜" }
 ];
 
 const FAMILIES = [...new Set(WORDS.map(w => w.family))];
