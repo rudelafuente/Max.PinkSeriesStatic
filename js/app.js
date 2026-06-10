@@ -47,6 +47,11 @@ var App = (function() {
     blue:  { label: "Blue",  icon: "🔵", color: "series-blue" },
     green: { label: "Green", icon: "🟢", color: "series-green" }
   };
+  var SERIES_ART = {
+    pink: "assets/series/pink-series-cartoon-bw.png",
+    blue: "assets/series/blue-series-cartoon-bw.png",
+    green: "assets/series/green-series-cartoon-bw.png"
+  };
 
   function wordSeries(word) { return word.series || "pink"; }
 
@@ -181,8 +186,22 @@ var App = (function() {
       badgeRow.appendChild(badge);
     });
 
+    var activeMeta = SERIES_META[active] || SERIES_META.pink;
+    var seriesPreview = el("section", { class: "series-preview-card " + activeMeta.color });
+    seriesPreview.appendChild(el("img", {
+      class: "series-preview-image",
+      src: SERIES_ART[active],
+      alt: activeMeta.label + " Series artwork"
+    }));
+    seriesPreview.appendChild(el("div", { class: "series-preview-title", text: activeMeta.label + " Series" }));
+    seriesPreview.appendChild(el("div", {
+      class: "series-preview-copy",
+      text: "Artwork and word bank for the active phonics series."
+    }));
+
     app.appendChild(statusBar);
     app.appendChild(badgeRow);
+    app.appendChild(seriesPreview);
     app.appendChild(grid);
   }
 
@@ -960,10 +979,16 @@ var App = (function() {
         radioCard.classList.add("series-radio-active");
       });
       var icon = el("span", { class: "series-radio-icon", text: s.icon });
+      var art = el("img", {
+        class: "series-radio-art",
+        src: SERIES_ART[s.key],
+        alt: s.label + " Series artwork"
+      });
       var name = el("span", { class: "series-radio-name", text: s.label + " Series" });
       var desc = el("span", { class: "series-radio-desc", text: s.desc });
       radioCard.appendChild(radio);
       radioCard.appendChild(icon);
+      radioCard.appendChild(art);
       radioCard.appendChild(name);
       radioCard.appendChild(desc);
       seriesGrid.appendChild(radioCard);
