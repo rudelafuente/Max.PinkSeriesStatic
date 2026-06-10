@@ -22,7 +22,7 @@ var App = (function() {
   function getActiveWords() {
     var active = getSettings().activeSeries || "pink";
     return WORDS.filter(function(w) {
-      return (w.series || "pink") === active;
+      return (w.series || "pink") === active && !w.support;
     });
   }
 
@@ -52,6 +52,24 @@ var App = (function() {
     blue: "assets/series/blue-series-cartoon-bw.png",
     green: "assets/series/green-series-cartoon-bw.png"
   };
+  var PINK_SPRITE_SHEET = "assets/words/pink-series-sprite-bw.png";
+  var PINK_SPRITE_COLS = 10;
+  var PINK_SPRITE_ROWS = 9;
+  var PINK_SPRITE_WORDS = [
+    "cat","mat","sat","hat","rat","man","pan","can","fan","pin",
+    "tin","bin","fin","dog","log","fog","sun","run","fun","pen",
+    "ten","hen","mug","bug","rug","top","mop","pop","bag","tag",
+    "rag","nag","wag","cap","map","nap","tap","bed","red","fed",
+    "led","wed","jet","net","pet","wet","big","dig","fig","jig",
+    "pig","wig","dip","lip","sip","zip","fit","hit","kit","sit",
+    "cot","dot","hot","pot","cub","sub","tub","cut","hut","nut",
+    "ham","jam","ram","yam","bad","dad","mad","sad","job","cob",
+    "sob","gum","hum","mum","sum","yum"
+  ];
+  var PINK_SPRITE_INDEX = {};
+  PINK_SPRITE_WORDS.forEach(function(word, index) {
+    PINK_SPRITE_INDEX[word] = index;
+  });
 
   function wordSeries(word) { return word.series || "pink"; }
 
@@ -63,16 +81,62 @@ var App = (function() {
     return null;
   }
 
-  function createVisualNode(imagePath, emojiText, className, altText) {
-    if (imagePath) {
+  function getWordVisual(wordRef) {
+    var entry = typeof wordRef === "string" ? findWordEntry(wordRef) : wordRef;
+    var wordText = entry && entry.word ? entry.word : wordRef;
+    var word = String(wordText || "").toLowerCase();
+    if (Object.prototype.hasOwnProperty.call(PINK_SPRITE_INDEX, word)) {
+      return {
+        type: "sprite",
+        sheet: PINK_SPRITE_SHEET,
+        cols: PINK_SPRITE_COLS,
+        rows: PINK_SPRITE_ROWS,
+        index: PINK_SPRITE_INDEX[word]
+      };
+    }
+    if (entry && entry.image) return { type: "image", src: entry.image };
+    if (entry && entry.emoji) return { type: "emoji", text: entry.emoji };
+    return null;
+  }
+
+  function getStoryVisual(story) {
+    if (story && story.image) return { type: "image", src: story.image };
+    if (story && story.emoji) return { type: "emoji", text: story.emoji };
+    return null;
+  }
+
+  function getSpriteStyle(sprite) {
+    var col = sprite.index % sprite.cols;
+    var row = Math.floor(sprite.index / sprite.cols);
+    var x = sprite.cols > 1 ? (col / (sprite.cols - 1)) * 100 : 0;
+    var y = sprite.rows > 1 ? (row / (sprite.rows - 1)) * 100 : 0;
+    return [
+      "background-image:url('" + sprite.sheet + "')",
+      "background-size:" + (sprite.cols * 100) + "% " + (sprite.rows * 100) + "%",
+      "background-position:" + x + "% " + y + "%",
+      "background-repeat:no-repeat"
+    ].join(";");
+  }
+
+  function createVisualNode(visual, className, altText) {
+    if (!visual) return null;
+    if (visual.type === "image" && visual.src) {
       return el("img", {
         class: className + " visual-image",
-        src: imagePath,
+        src: visual.src,
         alt: altText || ""
       });
     }
-    if (emojiText) {
-      return el("span", { class: className, text: emojiText });
+    if (visual.type === "sprite") {
+      return el("span", {
+        class: className + " visual-sprite",
+        style: getSpriteStyle(visual),
+        role: "img",
+        "aria-label": altText || ""
+      });
+    }
+    if (visual.type === "emoji" && visual.text) {
+      return el("span", { class: className, text: visual.text });
     }
     return null;
   }
@@ -110,9 +174,11 @@ var App = (function() {
 
     wrap.appendChild(trigger);
 
-    var revealVisual = wordEntry
-      ? createVisualNode(wordEntry.image, wordEntry.emoji, revealClass, wordText + " illustration")
-      : null;
+    var revealVisual = createVisualNode(
+      getWordVisual(wordEntry || wordText),
+      revealClass,
+      wordText + " illustration"
+    );
 
     if (revealVisual) {
       var hint = el("div", { class: "word-reveal-hint", text: "Tap to see drawing" });
@@ -179,6 +245,7 @@ var App = (function() {
       home:      renderHome,
       blend:     renderBlend,
       listen:    renderListen,
+      sentences: renderSentences,
       families:  renderFamilies,
       calendar:  renderCalendar,
       settings:  renderSettings,
@@ -217,6 +284,7 @@ var App = (function() {
     var buttons = [
       { label: "Blend the Word",     icon: "🔤", view: "blend" },
       { label: "Listen & Choose",    icon: "👂", view: "listen" },
+      { label: "Read Sentences",     icon: "📝", view: "sentences" },
       { label: "Word Families",      icon: "📚", view: "families" },
       { label: "Stories",            icon: "📖", view: "stories" },
       { label: "Practice Calendar",  icon: "📅", view: "calendar" },
@@ -403,7 +471,7 @@ var App = (function() {
       var grid = el("div", { class: "choices-grid" });
       choices.forEach(function(choice) {
         var card = el("button", { class: "choice-card" });
-        var choiceVisual = createVisualNode(choice.image, choice.emoji, "choice-emoji", choice.word + " illustration");
+        var choiceVisual = createVisualNode(getWordVisual(choice), "choice-emoji", choice.word + " illustration");
         if (choiceVisual) card.appendChild(choiceVisual);
         var wordSpan = el("span", { class: "choice-word", text: choice.word });
         var phonSpan = el("span", { class: "choice-phonemes",
@@ -469,6 +537,116 @@ var App = (function() {
   }
 
   // ── Word Families ──────────────────────────────────────────────────────────
+
+  function renderSentences() {
+    setBackButton(true, "â† Home");
+    setHeaderTitle("Read Sentences");
+
+    var app = $("#app");
+    var settings = getSettings();
+    var sentenceIndex = Math.floor(Math.random() * PINK_SENTENCES.length);
+    var isPlayingSentence = false;
+
+    function getSentenceWords(sentence) {
+      return sentence.words
+        .map(findWordEntry)
+        .filter(function(item) { return !!item; });
+    }
+
+    function render() {
+      var sentence = PINK_SENTENCES[sentenceIndex];
+      var wordItems = getSentenceWords(sentence);
+      app.innerHTML = "";
+
+      var intro = el("p", {
+        class: "section-intro",
+        text: "Read the sentence. Tap a word to hear it, then read the whole sentence again."
+      });
+      var note = el("div", {
+        class: "sentence-note",
+        text: "Short Year 1 sentences using decodable Pink Series words plus common support words such as the, a, and, is and on."
+      });
+      var sentenceCard = el("div", { class: "sentence-card" });
+      sentenceCard.appendChild(el("div", { class: "sentence-text", text: sentence.text }));
+
+      var wordRow = el("div", { class: "sentence-word-row" });
+      var wordButtons = [];
+      sentence.words.forEach(function(word) {
+        var item = findWordEntry(word);
+        var btn = el("button", {
+          class: "sentence-word-btn",
+          type: "button",
+          text: word
+        });
+        if (!item) btn.disabled = true;
+        btn.addEventListener("click", function() {
+          if (!item || isPlayingSentence) return;
+          btn.classList.add("sentence-word-active");
+          playWordPhonemes(item, settings.phonemeDelay).then(function() {
+            btn.classList.remove("sentence-word-active");
+          });
+        });
+        wordButtons.push(btn);
+        wordRow.appendChild(btn);
+      });
+
+      var playSentenceBtn = el("button", { class: "btn btn-primary", text: "â–¶  Play sentence sounds" });
+      var nextBtn = el("button", { class: "btn btn-soft", text: "New sentence" });
+
+      playSentenceBtn.addEventListener("click", function() {
+        if (isPlayingSentence || !wordItems.length) return;
+        isPlayingSentence = true;
+        playSentenceBtn.disabled = true;
+        nextBtn.disabled = true;
+        wordButtons.forEach(function(btn) { btn.disabled = true; });
+
+        (async function() {
+          for (var i = 0; i < wordItems.length; i++) {
+            var activeBtn = wordButtons[i];
+            if (activeBtn) activeBtn.classList.add("sentence-word-active");
+            await playWordPhonemes(wordItems[i], settings.phonemeDelay);
+            if (activeBtn) activeBtn.classList.remove("sentence-word-active");
+            if (i < wordItems.length - 1) await wait(450);
+          }
+        })().finally(function() {
+          isPlayingSentence = false;
+          playSentenceBtn.disabled = false;
+          nextBtn.disabled = false;
+          wordButtons.forEach(function(btn, index) {
+            btn.disabled = !findWordEntry(sentence.words[index]) ? true : false;
+          });
+        });
+      });
+
+      nextBtn.addEventListener("click", function() {
+        sentenceIndex = (sentenceIndex + 1 + Math.floor(Math.random() * (PINK_SENTENCES.length - 1))) % PINK_SENTENCES.length;
+        render();
+      });
+
+      var actionRow = el("div", { class: "sentence-actions" });
+      actionRow.appendChild(playSentenceBtn);
+      actionRow.appendChild(nextBtn);
+
+      var phonicsRow = el("div", { class: "sentence-phonics" });
+      wordItems.forEach(function(item) {
+        phonicsRow.appendChild(el("span", {
+          class: "sentence-phonics-pill",
+          text: item.support
+            ? item.word + ": support word"
+            : item.word + ": " + item.phonemes.map(function(p) { return "/" + p + "/"; }).join(" ")
+        }));
+      });
+
+      app.appendChild(intro);
+      app.appendChild(note);
+      app.appendChild(sentenceCard);
+      app.appendChild(wordRow);
+      app.appendChild(actionRow);
+      app.appendChild(phonicsRow);
+    }
+
+    render();
+  }
 
   function renderFamilies(params) {
     setBackButton(true, "← Home");
@@ -708,7 +886,7 @@ var App = (function() {
     stories.forEach(function(story) {
       var card = el("button", { class: "story-card" });
 
-      var storyCardVisual = createVisualNode(story.image, story.emoji, "story-card-emoji", story.title + " cover");
+      var storyCardVisual = createVisualNode(getStoryVisual(story), "story-card-emoji", story.title + " cover");
       if (storyCardVisual) card.appendChild(storyCardVisual);
       card.appendChild(el("span", { class: "story-card-title", text: story.title }));
       card.appendChild(el("span", { class: "story-card-meta", text: story.level + " · " + story.duration }));
@@ -756,7 +934,7 @@ var App = (function() {
 
     // Title + emoji
     var titleDisplay = el("div", { class: "story-title-display" });
-    var storyTitleVisual = createVisualNode(story.image, story.emoji, "story-title-visual", story.title + " cover");
+    var storyTitleVisual = createVisualNode(getStoryVisual(story), "story-title-visual", story.title + " cover");
     if (storyTitleVisual) titleDisplay.appendChild(storyTitleVisual);
     titleDisplay.appendChild(el("span", { class: "story-title-text", text: story.title }));
     app.appendChild(titleDisplay);

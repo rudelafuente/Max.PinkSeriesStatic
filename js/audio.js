@@ -40,6 +40,17 @@ async function playWordPhonemes(wordItem, delayMs) {
   await playAudioSequence(paths, delay);
 }
 
+async function playWordItemSequence(wordItems, delayMs, gapMs) {
+  var delay = (delayMs !== undefined) ? delayMs : 350;
+  var gap = (gapMs !== undefined) ? gapMs : 450;
+  for (var i = 0; i < wordItems.length; i++) {
+    await playWordPhonemes(wordItems[i], delay);
+    if (i < wordItems.length - 1) {
+      await wait(gap);
+    }
+  }
+}
+
 async function playPhoneme(phoneme) {
   await playAudio(getAudioPathForPhoneme(phoneme));
 }

@@ -2,6 +2,15 @@
 // Phoneme mapping note: "c" in words like "cat" maps to "k" (available audio file)
 
 const WORDS = [
+  // High-frequency support words for sentence reading
+  { word: "a",   series: "pink", family: "support", support: true, phonemes: ["schwa"],             emoji: "" },
+  { word: "the", series: "pink", family: "support", support: true, phonemes: ["th_voiced","schwa"], emoji: "" },
+  { word: "and", series: "pink", family: "support", support: true, phonemes: ["a","n","d"],         emoji: "" },
+  { word: "is",  series: "pink", family: "support", support: true, phonemes: ["i","z"],             emoji: "" },
+  { word: "on",  series: "pink", family: "support", support: true, phonemes: ["o","n"],             emoji: "" },
+  { word: "has", series: "pink", family: "support", support: true, phonemes: ["h","a","z"],         emoji: "" },
+  { word: "i",   series: "pink", family: "support", support: true, phonemes: ["igh"],               emoji: "" },
+
   // -at family
   { word: "at",  family: "at", phonemes: ["a", "t"],       emoji: "" },
   { word: "cat", family: "at", phonemes: ["k", "a", "t"],  emoji: "🐱" },
@@ -262,6 +271,27 @@ const WORDS = [
 ];
 
 const FAMILIES = [...new Set(WORDS.map(w => w.family))];
+
+const PINK_SENTENCES = [
+  { text: "The cat sat on the mat.", words: ["the", "cat", "sat", "on", "the", "mat"] },
+  { text: "A dog is in the fog.", words: ["a", "dog", "is", "in", "the", "fog"] },
+  { text: "The hen is in the pen.", words: ["the", "hen", "is", "in", "the", "pen"] },
+  { text: "Mum and Dad had jam.", words: ["mum", "and", "dad", "had", "jam"] },
+  { text: "A man has a red hat.", words: ["a", "man", "has", "a", "red", "hat"] },
+  { text: "The bug is on the rug.", words: ["the", "bug", "is", "on", "the", "rug"] },
+  { text: "The dog got wet.", words: ["the", "dog", "got", "wet"] },
+  { text: "A big pig can run.", words: ["a", "big", "pig", "can", "run"] },
+  { text: "The sun is hot.", words: ["the", "sun", "is", "hot"] },
+  { text: "A cap is in the bin.", words: ["a", "cap", "is", "in", "the", "bin"] },
+  { text: "The ram is on the mat.", words: ["the", "ram", "is", "on", "the", "mat"] },
+  { text: "I can run and sit.", words: ["i", "can", "run", "and", "sit"] },
+  { text: "The tin is in the bag.", words: ["the", "tin", "is", "in", "the", "bag"] },
+  { text: "A pet can sit.", words: ["a", "pet", "can", "sit"] },
+  { text: "The cub is in the tub.", words: ["the", "cub", "is", "in", "the", "tub"] },
+  { text: "The pan is hot.", words: ["the", "pan", "is", "hot"] },
+  { text: "Dad has a big map.", words: ["dad", "has", "a", "big", "map"] },
+  { text: "The cat and dog can nap.", words: ["the", "cat", "and", "dog", "can", "nap"] }
+];
 
 function getAudioPathForPhoneme(phoneme) {
   return "audio/phonemes/" + phoneme + ".mp3";

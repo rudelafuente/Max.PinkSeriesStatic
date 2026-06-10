@@ -367,6 +367,14 @@ header {
   user-select: none;
 }
 
+img.word-emoji.visual-image,
+.word-emoji.visual-sprite {
+  width: 160px;
+  height: 160px;
+  border-radius: 18px;
+  border: 1.5px solid var(--border);
+}
+
 .word-reveal-wrap {
   display: flex;
   flex-direction: column;
@@ -402,6 +410,11 @@ header {
 .visual-image {
   object-fit: cover;
   background: #fff;
+}
+
+.visual-sprite {
+  display: block;
+  background-color: #fff;
 }
 
 .word-display {
@@ -519,6 +532,13 @@ img.choice-emoji.visual-image {
   border: 1.5px solid var(--border);
 }
 
+.choice-emoji.visual-sprite {
+  width: 88px;
+  height: 88px;
+  border-radius: 14px;
+  border: 1.5px solid var(--border);
+}
+
 .choice-word {
   font-size: 2rem;
   font-weight: 700;
@@ -554,6 +574,91 @@ img.choice-emoji.visual-image {
   gap: 12px;
   justify-content: center;
   flex-wrap: wrap;
+}
+
+.sentence-note {
+  background: var(--accent-soft);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.sentence-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px 18px;
+  box-shadow: var(--shadow);
+}
+
+.sentence-text {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1.4;
+}
+
+.sentence-word-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.sentence-word-btn {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 999px;
+  padding: 10px 16px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s, transform 0.1s;
+  font-family: inherit;
+}
+
+.sentence-word-btn:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+
+.sentence-word-btn:active {
+  transform: scale(0.97);
+}
+
+.sentence-word-active {
+  background: var(--success-bg) !important;
+  border-color: var(--success) !important;
+  color: var(--success) !important;
+}
+
+.sentence-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.sentence-phonics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.sentence-phonics-pill {
+  background: var(--soft-bg);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 6px 12px;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  line-height: 1.3;
 }
 
 /* ── Word Families ───────────────────────────────────────────────────────── */
@@ -839,6 +944,13 @@ img.story-card-emoji.visual-image {
   border: 1.5px solid var(--border);
 }
 
+.story-card-emoji.visual-sprite {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: 12px;
+  border: 1.5px solid var(--border);
+}
+
 .story-card-title {
   font-size: 0.95rem;
   font-weight: 600;
@@ -921,6 +1033,14 @@ img.story-title-visual.visual-image {
   border: 1.5px solid var(--border);
 }
 
+.story-title-visual.visual-sprite {
+  width: 100%;
+  max-width: 320px;
+  aspect-ratio: 4 / 3;
+  border-radius: 14px;
+  border: 1.5px solid var(--border);
+}
+
 .story-page {
   background: var(--surface);
   border: 1.5px solid var(--border);
@@ -960,6 +1080,14 @@ img.story-title-visual.visual-image {
 .story-word-art {
   font-size: 2rem;
   line-height: 1;
+}
+
+.story-word-art.visual-sprite,
+img.story-word-art.visual-image {
+  width: 72px;
+  height: 72px;
+  border-radius: 12px;
+  border: 1.5px solid var(--border);
 }
 
 .story-nav {
@@ -1003,6 +1131,14 @@ img.story-title-visual.visual-image {
 .practice-word-art {
   font-size: 4rem;
   line-height: 1;
+}
+
+.practice-word-art.visual-sprite,
+img.practice-word-art.visual-image {
+  width: 160px;
+  height: 160px;
+  border-radius: 18px;
+  border: 1.5px solid var(--border);
 }
 
 .practice-counter {
