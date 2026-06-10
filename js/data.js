@@ -122,7 +122,35 @@ const WORDS = [
   { word: "cut", family: "ut", phonemes: ["k", "u", "t"],  emoji: "✂️" },
   { word: "gut", family: "ut", phonemes: ["g", "u", "t"],  emoji: "" },
   { word: "hut", family: "ut", phonemes: ["h", "u", "t"],  emoji: "🛖" },
-  { word: "nut", family: "ut", phonemes: ["n", "u", "t"],  emoji: "🥜" }
+  { word: "nut", family: "ut", phonemes: ["n", "u", "t"],  emoji: "🥜" },
+
+  // -am family
+  { word: "ham", family: "am", phonemes: ["h", "a", "m"],  emoji: "🥩" },
+  { word: "jam", family: "am", phonemes: ["j", "a", "m"],  emoji: "🍯" },
+  { word: "ram", family: "am", phonemes: ["r", "a", "m"],  emoji: "🐏" },
+  { word: "yam", family: "am", phonemes: ["y", "a", "m"],  emoji: "🍠" },
+  { word: "dam", family: "am", phonemes: ["d", "a", "m"],  emoji: "" },
+
+  // -ad family
+  { word: "bad", family: "ad", phonemes: ["b", "a", "d"],  emoji: "👎" },
+  { word: "dad", family: "ad", phonemes: ["d", "a", "d"],  emoji: "👨" },
+  { word: "had", family: "ad", phonemes: ["h", "a", "d"],  emoji: "" },
+  { word: "mad", family: "ad", phonemes: ["m", "a", "d"],  emoji: "😠" },
+  { word: "sad", family: "ad", phonemes: ["s", "a", "d"],  emoji: "😢" },
+
+  // -ob family
+  { word: "job", family: "ob", phonemes: ["j", "o", "b"],  emoji: "💼" },
+  { word: "cob", family: "ob", phonemes: ["k", "o", "b"],  emoji: "🌽" },
+  { word: "rob", family: "ob", phonemes: ["r", "o", "b"],  emoji: "" },
+  { word: "sob", family: "ob", phonemes: ["s", "o", "b"],  emoji: "😭" },
+  { word: "mob", family: "ob", phonemes: ["m", "o", "b"],  emoji: "" },
+
+  // -um family
+  { word: "gum", family: "um", phonemes: ["g", "u", "m"],  emoji: "🫧" },
+  { word: "hum", family: "um", phonemes: ["h", "u", "m"],  emoji: "🎵" },
+  { word: "mum", family: "um", phonemes: ["m", "u", "m"],  emoji: "👩" },
+  { word: "sum", family: "um", phonemes: ["s", "u", "m"],  emoji: "➕" },
+  { word: "yum", family: "um", phonemes: ["y", "u", "m"],  emoji: "😋" }
 ];
 
 const FAMILIES = [...new Set(WORDS.map(w => w.family))];
